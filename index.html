@@ -1,0 +1,771 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>AurySoftWare — CS2 External</title>
+  <meta name="description" content="AurySoftWare CS2 External — Gelişmiş ESP, Aimbot, TriggerBot. HWID korumalı lisans sistemi." />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=JetBrains+Mono:wght@400;600;700&display=swap" rel="stylesheet" />
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --bg:       #04040a;
+      --bg2:      #070710;
+      --panel:    #0c0c1a;
+      --panel2:   #101024;
+      --border:   rgba(70, 110, 255, 0.16);
+      --border2:  rgba(70, 110, 255, 0.30);
+      --accent:   #4d7fff;
+      --accent2:  #8b5cf6;
+      --accent3:  #06d6a0;
+      --glow:     rgba(77, 127, 255, 0.4);
+      --glow2:    rgba(139, 92, 246, 0.3);
+      --text:     #e2e6f8;
+      --dim:      #6272a4;
+      --dim2:     #8892b0;
+      --green:    #06d6a0;
+      --red:      #ff4d6d;
+      --yellow:   #ffd166;
+    }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      font-family: 'Inter', sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      overflow-x: hidden;
+      line-height: 1.6;
+    }
+
+    /* ── CANVAS ── */
+    #bg-canvas {
+      position: fixed; inset: 0; z-index: 0; pointer-events: none;
+    }
+
+    /* ── NAV ── */
+    nav {
+      position: fixed; top: 0; width: 100%; z-index: 100;
+      padding: 0 48px; height: 62px;
+      display: flex; align-items: center; justify-content: space-between;
+      background: rgba(4, 4, 10, 0.80);
+      backdrop-filter: blur(20px) saturate(180%);
+      border-bottom: 1px solid var(--border);
+    }
+    .nav-logo {
+      display: flex; align-items: center; gap: 10px;
+      text-decoration: none;
+    }
+    .nav-logo-icon {
+      width: 30px; height: 30px; border-radius: 8px;
+      background: linear-gradient(135deg, var(--accent), var(--accent2));
+      display: flex; align-items: center; justify-content: center;
+      font-size: .9rem; font-weight: 900; color: #fff;
+      box-shadow: 0 0 16px var(--glow);
+    }
+    .nav-logo-text {
+      font-size: 1rem; font-weight: 800; letter-spacing: .02em;
+      background: linear-gradient(120deg, var(--accent), var(--accent2));
+      -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+    }
+    .nav-links { display: flex; gap: 28px; list-style: none; }
+    .nav-links a {
+      color: var(--dim2); text-decoration: none;
+      font-size: .875rem; font-weight: 500;
+      transition: color .2s;
+    }
+    .nav-links a:hover { color: var(--text); }
+    .nav-badge {
+      display: flex; align-items: center; gap: 7px;
+      background: rgba(6, 214, 160, .1); border: 1px solid rgba(6, 214, 160, .25);
+      color: var(--green); font-size: .75rem; font-weight: 700;
+      padding: 5px 13px; border-radius: 100px; letter-spacing: .06em;
+    }
+    .pulse-dot {
+      width: 6px; height: 6px; border-radius: 50%; background: var(--green);
+      animation: blink 1.8s ease infinite;
+    }
+    @keyframes blink {
+      0%,100% { opacity:1; transform:scale(1); }
+      50%      { opacity:.4; transform:scale(.65); }
+    }
+
+    /* ── WRAPPERS ── */
+    .container { max-width: 1120px; margin: 0 auto; padding: 0 24px; position: relative; z-index: 1; }
+
+    /* ── HERO ── */
+    #hero {
+      min-height: 100vh;
+      display: flex; flex-direction: column;
+      align-items: center; justify-content: center;
+      text-align: center;
+      padding: 120px 24px 80px;
+      position: relative; z-index: 1;
+    }
+
+    .hero-eyebrow {
+      display: inline-flex; align-items: center; gap: 8px;
+      font-size: .72rem; font-weight: 700; letter-spacing: .14em;
+      color: var(--accent); text-transform: uppercase;
+      border: 1px solid rgba(77,127,255,.25);
+      background: rgba(77,127,255,.08);
+      padding: 6px 16px; border-radius: 100px; margin-bottom: 32px;
+    }
+
+    h1 {
+      font-size: clamp(3rem, 8vw, 6.5rem);
+      font-weight: 900;
+      line-height: 1.04;
+      letter-spacing: -.04em;
+      margin-bottom: 24px;
+    }
+    .grad-text {
+      background: linear-gradient(135deg, #fff 0%, var(--accent) 40%, var(--accent2) 80%);
+      -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+      filter: drop-shadow(0 0 40px rgba(77,127,255,.3));
+    }
+    .hero-sub {
+      font-size: 1.1rem; color: var(--dim2); max-width: 480px;
+      margin: 0 auto 52px; font-weight: 400; line-height: 1.75;
+    }
+
+    /* Pill tags */
+    .hero-tags { display: flex; gap: 10px; justify-content: center; flex-wrap: wrap; margin-bottom: 56px; }
+    .pill {
+      font-size: .78rem; font-weight: 600; padding: 6px 14px;
+      border-radius: 100px; border: 1px solid; letter-spacing: .04em;
+    }
+    .pill-blue  { border-color: rgba(77,127,255,.35); background: rgba(77,127,255,.1); color: var(--accent); }
+    .pill-purple{ border-color: rgba(139,92,246,.35); background: rgba(139,92,246,.1); color: #a78bfa; }
+    .pill-green { border-color: rgba(6,214,160,.3);  background: rgba(6,214,160,.08); color: var(--green); }
+
+    /* Scroll hint */
+    .scroll-hint {
+      position: absolute; bottom: 36px; left: 50%; transform: translateX(-50%);
+      display: flex; flex-direction: column; align-items: center; gap: 8px;
+      color: var(--dim); font-size: .72rem; font-weight: 500; letter-spacing: .1em;
+      animation: fadeDown 1.5s ease infinite;
+    }
+    .scroll-hint svg { opacity: .5; }
+    @keyframes fadeDown {
+      0%,100% { opacity:.4; transform: translateX(-50%) translateY(0); }
+      50%      { opacity:.9; transform: translateX(-50%) translateY(6px); }
+    }
+
+    /* ── STATS BAR ── */
+    .stats-bar {
+      position: relative; z-index: 1;
+      background: var(--panel);
+      border-top: 1px solid var(--border);
+      border-bottom: 1px solid var(--border);
+      padding: 28px 24px;
+    }
+    .stats-inner {
+      max-width: 900px; margin: 0 auto;
+      display: grid; grid-template-columns: repeat(4, 1fr);
+      gap: 0;
+    }
+    .stat-item {
+      text-align: center; padding: 8px 16px;
+      border-right: 1px solid var(--border);
+    }
+    .stat-item:last-child { border-right: none; }
+    .stat-val {
+      font-size: 1.7rem; font-weight: 900; letter-spacing: -.03em;
+      background: linear-gradient(135deg, var(--accent), var(--accent2));
+      -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+    }
+    .stat-lbl { font-size: .72rem; color: var(--dim); font-weight: 600; letter-spacing: .06em; text-transform: uppercase; margin-top: 3px; }
+
+    /* ── SECTIONS ── */
+    .section { padding: 110px 0; position: relative; z-index: 1; }
+    .section-label {
+      font-size: .7rem; font-weight: 700; letter-spacing: .14em;
+      color: var(--accent); text-transform: uppercase; margin-bottom: 12px;
+      text-align: center;
+    }
+    .section-title {
+      font-size: clamp(1.8rem, 4vw, 2.6rem);
+      font-weight: 800; letter-spacing: -.025em;
+      text-align: center; margin-bottom: 14px;
+    }
+    .section-sub {
+      text-align: center; color: var(--dim2); font-size: .95rem;
+      max-width: 480px; margin: 0 auto 64px; line-height: 1.7;
+    }
+
+    /* ── FEATURES ── */
+    .feat-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+      gap: 16px;
+    }
+    .feat-card {
+      background: var(--panel);
+      border: 1px solid var(--border);
+      border-radius: 18px; padding: 30px;
+      transition: transform .3s, border-color .3s, box-shadow .3s;
+      position: relative; overflow: hidden;
+      cursor: default;
+    }
+    .feat-card::after {
+      content: '';
+      position: absolute; top: 0; left: -100%; width: 60%; height: 100%;
+      background: linear-gradient(90deg, transparent, rgba(77,127,255,.04), transparent);
+      transition: left .6s;
+    }
+    .feat-card:hover::after { left: 150%; }
+    .feat-card:hover {
+      transform: translateY(-5px);
+      border-color: var(--border2);
+      box-shadow: 0 20px 60px rgba(77,127,255,.1), 0 0 0 1px rgba(77,127,255,.08);
+    }
+    .feat-header { display: flex; align-items: flex-start; gap: 16px; margin-bottom: 16px; }
+    .feat-icon-wrap {
+      width: 46px; height: 46px; border-radius: 12px; flex-shrink: 0;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 1.3rem;
+      border: 1px solid;
+    }
+    .icon-blue   { background: rgba(77,127,255,.12);  border-color: rgba(77,127,255,.25); }
+    .icon-purple { background: rgba(139,92,246,.12);  border-color: rgba(139,92,246,.25); }
+    .icon-green  { background: rgba(6,214,160,.1);    border-color: rgba(6,214,160,.2); }
+    .icon-red    { background: rgba(255,77,109,.1);   border-color: rgba(255,77,109,.2); }
+    .icon-yellow { background: rgba(255,209,102,.1);  border-color: rgba(255,209,102,.2); }
+    .icon-cyan   { background: rgba(0,191,255,.1);    border-color: rgba(0,191,255,.2); }
+
+    .feat-title { font-size: 1rem; font-weight: 700; margin-bottom: 4px; }
+    .feat-ver   { font-size: .7rem; color: var(--dim); font-family: 'JetBrains Mono', monospace; }
+    .feat-desc  { font-size: .86rem; color: var(--dim2); line-height: 1.7; margin-bottom: 16px; }
+
+    .feat-list { list-style: none; display: flex; flex-direction: column; gap: 6px; }
+    .feat-list li {
+      font-size: .8rem; color: var(--dim2);
+      display: flex; align-items: center; gap: 8px;
+    }
+    .feat-list li::before {
+      content: ''; width: 5px; height: 5px; border-radius: 50%;
+      background: var(--accent); flex-shrink: 0;
+    }
+
+    /* ── SCREENSHOTS ── */
+    .screenshots-section {
+      padding: 110px 0; position: relative; z-index: 1;
+      background: linear-gradient(180deg, transparent 0%, rgba(77,127,255,.03) 50%, transparent 100%);
+    }
+    .screenshots-grid {
+      display: grid; grid-template-columns: 1fr 1fr; gap: 24px; margin-top: 0;
+    }
+    .screenshot-frame {
+      position: relative; border-radius: 16px; overflow: hidden;
+      border: 1px solid var(--border2);
+      background: var(--panel);
+      aspect-ratio: 16/9;
+      transition: transform .3s, box-shadow .3s;
+      cursor: pointer;
+    }
+    .screenshot-frame:hover {
+      transform: scale(1.02) translateY(-4px);
+      box-shadow: 0 30px 80px rgba(77,127,255,.15), 0 0 0 1px rgba(77,127,255,.2);
+    }
+    /* Kendi resimlerini buraya koy: src="screenshots/ss1.png" */
+    .screenshot-frame img {
+      width: 100%; height: 100%; object-fit: cover; display: block;
+    }
+
+    /* Placeholder (resim koymadan önce bu görünür) */
+    .screenshot-placeholder {
+      position: absolute; inset: 0;
+      display: flex; flex-direction: column;
+      align-items: center; justify-content: center; gap: 12px;
+      background: linear-gradient(135deg, var(--panel) 0%, rgba(77,127,255,.06) 100%);
+    }
+    .ph-icon {
+      width: 60px; height: 60px; border-radius: 16px;
+      background: rgba(77,127,255,.1); border: 2px dashed rgba(77,127,255,.3);
+      display: flex; align-items: center; justify-content: center;
+      font-size: 1.6rem;
+    }
+    .ph-text { font-size: .82rem; color: var(--dim); font-weight: 500; }
+    .ph-sub  { font-size: .72rem; color: var(--dim); opacity: .6; font-family: 'JetBrains Mono', monospace; }
+
+    /* Corner glow on frame */
+    .screenshot-frame::before {
+      content: '';
+      position: absolute; inset: 0; z-index: 1; pointer-events: none;
+      background: linear-gradient(135deg, rgba(77,127,255,.12) 0%, transparent 50%);
+    }
+    .ss-badge {
+      position: absolute; top: 14px; left: 14px; z-index: 2;
+      background: rgba(4,4,10,.85); backdrop-filter: blur(10px);
+      border: 1px solid var(--border2); border-radius: 8px;
+      padding: 5px 12px; font-size: .72rem; font-weight: 700;
+      color: var(--accent); letter-spacing: .06em; text-transform: uppercase;
+    }
+
+    /* ── HOW IT WORKS ── */
+    .howto-grid {
+      display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      gap: 20px;
+    }
+    .how-card {
+      background: var(--panel); border: 1px solid var(--border);
+      border-radius: 16px; padding: 28px 24px;
+      transition: border-color .25s, transform .25s;
+    }
+    .how-card:hover { border-color: var(--border2); transform: translateY(-4px); }
+    .how-num {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 2.2rem; font-weight: 700;
+      background: linear-gradient(135deg, var(--accent), var(--accent2));
+      -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+      margin-bottom: 14px; display: block;
+    }
+    .how-title { font-size: .95rem; font-weight: 700; margin-bottom: 8px; }
+    .how-desc  { font-size: .83rem; color: var(--dim2); line-height: 1.65; }
+
+    /* ── SPEC TABLE ── */
+    .spec-table {
+      background: var(--panel); border: 1px solid var(--border);
+      border-radius: 18px; overflow: hidden;
+    }
+    .spec-row {
+      display: grid; grid-template-columns: 200px 1fr;
+      border-bottom: 1px solid var(--border);
+      transition: background .2s;
+    }
+    .spec-row:last-child { border-bottom: none; }
+    .spec-row:hover { background: rgba(77,127,255,.04); }
+    .spec-key {
+      padding: 16px 24px; font-size: .82rem; font-weight: 600;
+      color: var(--dim); font-family: 'JetBrains Mono', monospace;
+      border-right: 1px solid var(--border);
+    }
+    .spec-val {
+      padding: 16px 24px; font-size: .85rem; color: var(--text); font-weight: 500;
+    }
+    .spec-val code {
+      font-family: 'JetBrains Mono', monospace;
+      background: rgba(77,127,255,.12); color: var(--accent);
+      padding: 2px 8px; border-radius: 5px; font-size: .8em;
+    }
+    .spec-val .tag-ok {
+      display: inline-flex; align-items: center; gap: 5px;
+      color: var(--green); font-weight: 600; font-size: .82rem;
+    }
+    .spec-val .tag-ok::before { content: '✓'; }
+
+    /* ── STATUS STRIP ── */
+    .status-strip {
+      position: relative; z-index: 1;
+      background: var(--panel2); border-top: 1px solid var(--border); border-bottom: 1px solid var(--border);
+      padding: 18px 24px;
+      display: flex; align-items: center; justify-content: center; gap: 32px; flex-wrap: wrap;
+    }
+    .status-item { display: flex; align-items: center; gap: 8px; font-size: .8rem; font-weight: 600; color: var(--dim2); }
+    .s-dot { width: 7px; height: 7px; border-radius: 50%; }
+    .s-green { background: var(--green); box-shadow: 0 0 8px var(--green); animation: blink 2s infinite; }
+
+    /* ── FOOTER ── */
+    footer {
+      position: relative; z-index: 1;
+      border-top: 1px solid var(--border);
+      padding: 48px 24px 32px;
+      text-align: center;
+    }
+    .footer-logo {
+      font-size: 1.3rem; font-weight: 900;
+      background: linear-gradient(120deg, var(--accent), var(--accent2));
+      -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+      margin-bottom: 8px;
+    }
+    .footer-sub { font-size: .8rem; color: var(--dim); margin-bottom: 20px; }
+    .footer-nav { display: flex; gap: 24px; justify-content: center; flex-wrap: wrap; }
+    .footer-nav a { color: var(--dim); text-decoration: none; font-size: .8rem; transition: color .2s; }
+    .footer-nav a:hover { color: var(--text); }
+    .footer-copy { margin-top: 24px; font-size: .73rem; color: var(--dim); opacity: .6; }
+
+    /* ── RESPONSIVE ── */
+    @media (max-width: 700px) {
+      nav { padding: 0 20px; }
+      .nav-links { display: none; }
+      .stats-inner { grid-template-columns: repeat(2,1fr); }
+      .stat-item:nth-child(2) { border-right: none; }
+      .screenshots-grid { grid-template-columns: 1fr; }
+      .spec-row { grid-template-columns: 1fr; }
+      .spec-key { border-right: none; border-bottom: 1px solid var(--border); }
+    }
+
+    /* ── REVEAL ANIM ── */
+    .reveal { opacity: 0; transform: translateY(28px); transition: opacity .6s ease, transform .6s ease; }
+    .reveal.visible { opacity: 1; transform: translateY(0); }
+  </style>
+</head>
+<body>
+
+<canvas id="bg-canvas"></canvas>
+
+<!-- NAV -->
+<nav>
+  <a href="#" class="nav-logo">
+    <div class="nav-logo-icon">A</div>
+    <span class="nav-logo-text">AurySoftWare</span>
+  </a>
+  <ul class="nav-links">
+    <li><a href="#features">Özellikler</a></li>
+    <li><a href="#screenshots">Ekran Görüntüleri</a></li>
+    <li><a href="#specs">Teknik</a></li>
+    <li><a href="#howto">Nasıl Çalışır</a></li>
+  </ul>
+  <div class="nav-badge">
+    <span class="pulse-dot"></span>
+    Undetected
+  </div>
+</nav>
+
+<!-- HERO -->
+<section id="hero">
+  <div class="hero-eyebrow">
+    <span class="pulse-dot"></span>
+    CS2 External — v2.2 Güncel
+  </div>
+  <h1>
+    <span class="grad-text">AurySoftWare</span><br/>
+    CS2 External
+  </h1>
+  <p class="hero-sub">
+    Gelişmiş ESP, hassas Aimbot, akıllı TriggerBot.<br/>
+    Tamamen harici — oyun belleğine enjeksiyon yok.
+  </p>
+  <div class="hero-tags">
+    <span class="pill pill-blue">🎯 Aimbot</span>
+    <span class="pill pill-purple">👁 ESP</span>
+    <span class="pill pill-green">🔫 TriggerBot</span>
+    <span class="pill pill-blue">💣 Bomba Sayacı</span>
+    <span class="pill pill-purple">🔐 HWID Lisans</span>
+    <span class="pill pill-green">⚡ Bhop</span>
+  </div>
+  <div class="scroll-hint">
+    SCROLL
+    <svg width="12" height="16" viewBox="0 0 12 16" fill="none">
+      <path d="M6 1v14M1 10l5 5 5-5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+    </svg>
+  </div>
+</section>
+
+<!-- STATS -->
+<div class="stats-bar">
+  <div class="stats-inner">
+    <div class="stat-item">
+      <div class="stat-val">RSA</div>
+      <div class="stat-lbl">2048-bit Lisans</div>
+    </div>
+    <div class="stat-item">
+      <div class="stat-val">5+</div>
+      <div class="stat-lbl">Offset Kaynağı</div>
+    </div>
+    <div class="stat-item">
+      <div class="stat-val">0</div>
+      <div class="stat-lbl">Bellek Enjeksiyonu</div>
+    </div>
+    <div class="stat-item">
+      <div class="stat-val">Auto</div>
+      <div class="stat-lbl">Offset Güncelleme</div>
+    </div>
+  </div>
+</div>
+
+<!-- STATUS -->
+<div class="status-strip">
+  <div class="status-item"><span class="s-dot s-green"></span>Aimbot Aktif</div>
+  <div class="status-item"><span class="s-dot s-green"></span>ESP Aktif</div>
+  <div class="status-item"><span class="s-dot s-green"></span>TriggerBot Aktif</div>
+  <div class="status-item"><span class="s-dot s-green"></span>Offset Güncel</div>
+  <div class="status-item"><span class="s-dot s-green"></span>Undetected</div>
+</div>
+
+<!-- FEATURES -->
+<section class="section" id="features">
+  <div class="container">
+    <div class="section-label">Özellikler</div>
+    <h2 class="section-title">Ne Sunuyor?</h2>
+    <p class="section-sub">Gelişmiş external cheat özellikleri — tamamen özelleştirilebilir, oyun içi menüden kontrol edilebilir.</p>
+
+    <div class="feat-grid">
+
+      <div class="feat-card reveal">
+        <div class="feat-header">
+          <div class="feat-icon-wrap icon-blue">🎯</div>
+          <div>
+            <div class="feat-title">Legit Aimbot</div>
+            <div class="feat-ver">v2.2 — Yeniden yazıldı</div>
+          </div>
+        </div>
+        <p class="feat-desc">Mouse simülasyonu (anti-ban) ve memory write modlarını destekler. Sticky lock, RCS ve ayarlanabilir smoothing ile insan gibi oynar.</p>
+        <ul class="feat-list">
+          <li>FOV ayarlı hedefleme (1°–60°)</li>
+          <li>Smoothing (1–20) kontrolü</li>
+          <li>Hedef kemik: Kafa / Boyun / Gövde / Kalça</li>
+          <li>Geri Tepme Kontrolü (RCS)</li>
+          <li>Hold / Toggle tuş modu</li>
+          <li>Sticky hedef kilidi</li>
+        </ul>
+      </div>
+
+      <div class="feat-card reveal">
+        <div class="feat-header">
+          <div class="feat-icon-wrap icon-purple">🔫</div>
+          <div>
+            <div class="feat-title">TriggerBot</div>
+            <div class="feat-ver">v2.2 — HeadOnly düzeltildi</div>
+          </div>
+        </div>
+        <p class="feat-desc">Crosshair'da düşman algılandığında otomatik ateş eder. HeadOnly modu gerçek kemik açı hesabı kullanır (~3° koni).</p>
+        <ul class="feat-list">
+          <li>Sadece Kafa modu (bone angle check)</li>
+          <li>Sadece Nişanlıyken (m_bIsScoped)</li>
+          <li>Rastgele gecikme (insan simülasyonu)</li>
+          <li>AutoStop desteği</li>
+          <li>Takım dostu kontrol</li>
+          <li>Her Zaman Açık modu</li>
+        </ul>
+      </div>
+
+      <div class="feat-card reveal">
+        <div class="feat-header">
+          <div class="feat-icon-wrap icon-cyan">👁️</div>
+          <div>
+            <div class="feat-title">ESP Sistemi</div>
+            <div class="feat-ver">v2.2 — Tam özellik seti</div>
+          </div>
+        </div>
+        <p class="feat-desc">Düşmanları duvardan gör. Kemik bazlı bounding box, iskelet, can barı, silah ve mesafe bilgisi.</p>
+        <ul class="feat-list">
+          <li>Kutu ESP (özel renk seçici)</li>
+          <li>İskelet ESP (tam kemik yapısı)</li>
+          <li>Can barı + sayısal değer</li>
+          <li>İsim, silah, mesafe göstergesi</li>
+          <li>Bayraklar: Scope / Flash / Shift</li>
+          <li>Görünürlük kontrolü (vischeck)</li>
+        </ul>
+      </div>
+
+      <div class="feat-card reveal">
+        <div class="feat-header">
+          <div class="feat-icon-wrap icon-green">✨</div>
+          <div>
+            <div class="feat-title">Glow ESP</div>
+            <div class="feat-ver">v2.2 — Alpha düzeltildi</div>
+          </div>
+        </div>
+        <p class="feat-desc">Oyuncuları duvardan parlayan renkle gösterir. Takım rengi ayrımı, özelleştirilebilir RGBA renk seçici.</p>
+        <ul class="feat-list">
+          <li>Özel renk + alpha kontrolü</li>
+          <li>Takım arkadaşı farklı renk</li>
+          <li>Full glow modu</li>
+        </ul>
+      </div>
+
+      <div class="feat-card reveal">
+        <div class="feat-header">
+          <div class="feat-icon-wrap icon-yellow">💣</div>
+          <div>
+            <div class="feat-title">Bomba Sayacı & Oy</div>
+            <div class="feat-ver">v2.2</div>
+          </div>
+        </div>
+        <p class="feat-desc">C4 patlamaya kalan süre, etkisiz hale getirme gerisayımı ve site bilgisi. Oylama sonuçlarını gösterir.</p>
+        <ul class="feat-list">
+          <li>A / B site göstergesi</li>
+          <li>Defuse geri sayımı</li>
+          <li>Oy teller (kick/restart)</li>
+        </ul>
+      </div>
+
+      <div class="feat-card reveal">
+        <div class="feat-header">
+          <div class="feat-icon-wrap icon-red">⚡</div>
+          <div>
+            <div class="feat-title">Misc & Hareket</div>
+            <div class="feat-ver">v2.2 — QuickStop düzeltildi</div>
+          </div>
+        </div>
+        <p class="feat-desc">Bhop, AutoStrafe ve Ani Dur (LShift ile velocity sıfırlama). Anti-Flash, HitMarker ve HitSound dahil.</p>
+        <ul class="feat-list">
+          <li>Bunny Hop (otomatik zıplama)</li>
+          <li>Auto Strafe (hava kontrolü)</li>
+          <li>Ani Dur — m_vecAbsVelocity sıfırlama</li>
+          <li>Anti-Flash (flashbang etkisi sıfır)</li>
+          <li>Hit Marker + Hit Sound</li>
+        </ul>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<!-- SCREENSHOTS -->
+<section class="screenshots-section" id="screenshots">
+  <div class="container">
+    <div class="section-label">Ekran Görüntüleri</div>
+    <h2 class="section-title">Oyun İçi Görünüm</h2>
+    <p class="section-sub">Gerçek oyun içi görüntüler — overlay menüsü ve ESP aktif.</p>
+
+    <div class="screenshots-grid reveal">
+
+      <!-- SCREENSHOT 1: src değerini kendi resmine çevir -->
+      <div class="screenshot-frame">
+        <div class="ss-badge">ESP + Aimbot</div>
+        <!-- Kendi resminle değiştir: <img src="screenshots/ss1.png" alt="ESP görünümü" /> -->
+        <div class="screenshot-placeholder">
+          <div class="ph-icon">🖼️</div>
+          <div class="ph-text">Ekran Görüntüsü #1</div>
+          <div class="ph-sub">src="screenshots/ss1.png"</div>
+        </div>
+      </div>
+
+      <!-- SCREENSHOT 2: src değerini kendi resmine çevir -->
+      <div class="screenshot-frame">
+        <div class="ss-badge">Menü Arayüzü</div>
+        <!-- Kendi resminle değiştir: <img src="screenshots/ss2.png" alt="Menü görünümü" /> -->
+        <div class="screenshot-placeholder">
+          <div class="ph-icon">🖼️</div>
+          <div class="ph-text">Ekran Görüntüsü #2</div>
+          <div class="ph-sub">src="screenshots/ss2.png"</div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<!-- SPECS -->
+<section class="section" id="specs">
+  <div class="container">
+    <div class="section-label">Teknik Özellikler</div>
+    <h2 class="section-title">Altta Nasıl Çalışıyor?</h2>
+    <p class="section-sub">Tamamen harici mimari — oyun sürecine enjeksiyon yok, sadece bellek okuma ve yazma.</p>
+
+    <div class="spec-table reveal">
+      <div class="spec-row"><div class="spec-key">Tür</div><div class="spec-val">External (Harici) — Enjeksiyon yok</div></div>
+      <div class="spec-row"><div class="spec-key">Platform</div><div class="spec-val">Windows 10/11 — x64</div></div>
+      <div class="spec-row"><div class="spec-key">Runtime</div><div class="spec-val"><code>.NET 8</code></div></div>
+      <div class="spec-row"><div class="spec-key">Lisans</div><div class="spec-val">RSA-2048 imzalı, HWID kilitli</div></div>
+      <div class="spec-row"><div class="spec-key">HWID</div><div class="spec-val">4 kaynak: Anakart UUID + CPU + Disk + Host</div></div>
+      <div class="spec-row"><div class="spec-key">Offset Güncelleme</div><div class="spec-val"><span class="tag-ok">Otomatik</span> — 5 bağımsız kaynak, cache yedekli</div></div>
+      <div class="spec-row"><div class="spec-key">Anti-Detection</div><div class="spec-val">Thread hiding, window spoofing, debugger check</div></div>
+      <div class="spec-row"><div class="spec-key">Overlay</div><div class="spec-val">ImGui + ClickableTransparentOverlay</div></div>
+      <div class="spec-row"><div class="spec-key">Menü Tuşu</div><div class="spec-val"><code>INSERT</code> (değiştirilebilir)</div></div>
+      <div class="spec-row"><div class="spec-key">Config</div><div class="spec-val">JSON tabanlı, otomatik yeniden yükleme, canlı düzenleme</div></div>
+    </div>
+  </div>
+</section>
+
+<!-- HOW IT WORKS -->
+<section class="section" id="howto">
+  <div class="container">
+    <div class="section-label">Kurulum</div>
+    <h2 class="section-title">Nasıl Başlanır?</h2>
+    <p class="section-sub">4 adımda kurulum tamamlanır.</p>
+
+    <div class="howto-grid">
+      <div class="how-card reveal">
+        <span class="how-num">01</span>
+        <div class="how-title">Lisans Al</div>
+        <div class="how-desc">Programı çalıştır, ekranda çıkan HWID kodunu satıcıya ilet. Sana özel <code>license.lic</code> dosyası üretilir.</div>
+      </div>
+      <div class="how-card reveal">
+        <span class="how-num">02</span>
+        <div class="how-title">Dosyayı Yerleştir</div>
+        <div class="how-desc"><code>license.lic</code> dosyasını <code>AurySoftWare.exe</code> ile aynı klasöre koy. HWID'e bağlıdır, başka bilgisayarda çalışmaz.</div>
+      </div>
+      <div class="how-card reveal">
+        <span class="how-num">03</span>
+        <div class="how-title">CS2'yi Aç</div>
+        <div class="how-desc">Önce CS2'yi başlat. Ardından <code>AurySoftWare.exe</code>'yi yönetici olarak çalıştır — otomatik bağlanır.</div>
+      </div>
+      <div class="how-card reveal">
+        <span class="how-num">04</span>
+        <div class="how-title">INSERT ile Menüyü Aç</div>
+        <div class="how-desc">Oyun içinde <code>INSERT</code> tuşuna bas, menü açılır. Tüm özellikleri buradan aç/kapat ve kaydet.</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <div class="footer-logo">AurySoftWare</div>
+  <div class="footer-sub">CS2 External v2.2 · HWID Korumalı · RSA-2048 Lisans · .NET 8</div>
+  <nav class="footer-nav">
+    <a href="#features">Özellikler</a>
+    <a href="#screenshots">Ekran Görüntüleri</a>
+    <a href="#specs">Teknik</a>
+    <a href="#howto">Kurulum</a>
+  </nav>
+  <div class="footer-copy">© 2026 AurySoftWare — Bu yazılım yalnızca eğitim amaçlıdır. Kullanım sorumluluğu kullanıcıya aittir.</div>
+</footer>
+
+<script>
+// ── Particle BG ──
+const canvas = document.getElementById('bg-canvas');
+const ctx = canvas.getContext('2d');
+let W, H;
+
+function resize() { W = canvas.width = window.innerWidth; H = canvas.height = window.innerHeight; }
+resize(); window.addEventListener('resize', resize);
+
+const pts = Array.from({length: 80}, () => ({
+  x: Math.random() * 1920, y: Math.random() * 1080,
+  r: Math.random() * 1.1 + 0.2,
+  vx: (Math.random()-.5)*.25, vy: (Math.random()-.5)*.25,
+  a: Math.random() * .45 + .08
+}));
+
+function draw() {
+  ctx.clearRect(0, 0, W, H);
+  pts.forEach(p => {
+    p.x += p.vx; p.y += p.vy;
+    if (p.x < 0) p.x = W; if (p.x > W) p.x = 0;
+    if (p.y < 0) p.y = H; if (p.y > H) p.y = 0;
+    ctx.beginPath(); ctx.arc(p.x, p.y, p.r, 0, Math.PI*2);
+    ctx.fillStyle = `rgba(77,127,255,${p.a})`; ctx.fill();
+  });
+  for (let i = 0; i < pts.length; i++)
+    for (let j = i+1; j < pts.length; j++) {
+      const dx = pts[i].x-pts[j].x, dy = pts[i].y-pts[j].y;
+      const d = Math.sqrt(dx*dx+dy*dy);
+      if (d < 130) {
+        ctx.beginPath(); ctx.moveTo(pts[i].x, pts[i].y); ctx.lineTo(pts[j].x, pts[j].y);
+        ctx.strokeStyle = `rgba(77,127,255,${.07*(1-d/130)})`; ctx.lineWidth = .6; ctx.stroke();
+      }
+    }
+  requestAnimationFrame(draw);
+}
+draw();
+
+// ── Scroll reveal ──
+const io = new IntersectionObserver(entries => {
+  entries.forEach(e => { if (e.isIntersecting) e.target.classList.add('visible'); });
+}, { threshold: 0.08 });
+document.querySelectorAll('.reveal').forEach(el => io.observe(el));
+
+// ── Screenshot click zoom effect ──
+document.querySelectorAll('.screenshot-frame').forEach(f => {
+  f.addEventListener('click', () => {
+    const img = f.querySelector('img');
+    if (!img) return;
+    const ov = document.createElement('div');
+    ov.style.cssText = 'position:fixed;inset:0;background:rgba(0,0,0,.92);z-index:999;display:flex;align-items:center;justify-content:center;cursor:zoom-out;backdrop-filter:blur(8px);';
+    const i = document.createElement('img');
+    i.src = img.src; i.style.cssText = 'max-width:92vw;max-height:92vh;border-radius:12px;box-shadow:0 0 80px rgba(77,127,255,.3);';
+    ov.appendChild(i); document.body.appendChild(ov);
+    ov.addEventListener('click', () => ov.remove());
+  });
+});
+</script>
+
+</body>
+</html>
